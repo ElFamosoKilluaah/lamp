@@ -208,6 +208,7 @@ impl VM {
         }
     }
     // Grabs next 8 bits of the VM's binary
+    // Stupid out of bounds error detected; should be fixed.
     pub fn next_8_bits(&mut self) -> u8 {
         self.pc += 1;
         self.bin[self.pc - 1]
