@@ -1,5 +1,5 @@
 Order should be respected, because further features depends to nearest ones (in the list of course).
-- Verify the opcode has enough operands to work properly
+- Verify the opcode has enough operands to work properly (really really REALLY important)
 - Pointers feature
 - Labels to jmp
 - Segments (constants, etc...)
