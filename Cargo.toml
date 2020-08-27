@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "lamp_common",
+    "lamp_vm",
+    "lamp_assembler",
+    "lamp_asm_parser"
+]
