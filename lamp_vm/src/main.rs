@@ -1,4 +1,5 @@
 use base::vm::VM;
+use debug::session::DebugSession;
 use log::{error, info};
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -14,7 +15,7 @@ struct LampApp {
     #[structopt(short)]
     bin_path: PathBuf,
 
-    #[structopt(long)]
+    #[structopt(short, long)]
     debug: bool,
 }
 
@@ -25,6 +26,13 @@ fn main() {
 
     match bin {
         Ok(v) => {
+            if lamp.debug {
+                let mut debug_session = DebugSession::new(VM::new(v));
+                debug_session.start_debug_session();
+                info!("Debug session ended.");
+                return;
+            }
+
             let mut lamp_vm = VM::new(v);
             let exit_status = lamp_vm.run();
 

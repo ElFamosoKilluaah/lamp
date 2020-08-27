@@ -218,4 +218,18 @@ impl VM {
         self.pc += 2;
         ((u16::from(self.bin[self.pc - 2])) << 8) | u16::from(self.bin[self.pc - 1])
     }
+
+    pub fn set_pc(&mut self, new_pc: usize) -> usize {
+        if new_pc > self.bin.len() {
+            self.pc = new_pc;
+            0
+        } else {
+            error!(
+                "Tried to set the program counter to {} where the binary\'s total size is {} bytes",
+                new_pc,
+                self.bin.len()
+            );
+            1
+        }
+    }
 }
