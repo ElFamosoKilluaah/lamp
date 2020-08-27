@@ -21,10 +21,15 @@ pub enum LexerError {
 impl std::fmt::Display for LexerError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::InvalidLine(at) => write!(f, "Line {} contains one or more invalid tokens", at),
-            Self::UnexpectedToken(at, tkn) => write!(f, "Unexpected token at {}: \'{}\'", at, tkn),
+            /* at + 1 because at is an array/vec index */
+            Self::InvalidLine(at) => {
+                write!(f, "Line {} contains one or more invalid tokens", at + 1)
+            }
+            Self::UnexpectedToken(at, tkn) => {
+                write!(f, "Unexpected token at line {}: \'{}\'", at + 1, tkn)
+            }
             Self::InvalidMnemonic(at, mnemonic) => {
-                write!(f, "Invalid mnemonic at {}: \'{}\'", at, mnemonic)
+                write!(f, "Invalid mnemonic at line {}: \'{}\'", at + 1, mnemonic)
             }
         }
     }
@@ -53,10 +58,12 @@ impl Lexer {
         Self {}
     }
 
+    #[allow(clippy::ptr_arg)]
     pub fn tokenize(&self, content: &Vec<String>) -> Result<Vec<TokenizedLine>, Vec<LexerError>> {
         let mut tokenized = Vec::<TokenizedLine>::new();
         let mut errors = Vec::<LexerError>::new();
 
+        #[allow(clippy::needless_range_loop)]
         for i in 0..content.len() {
             if content[i].starts_with(lamp_common::constants::COMMENT_MARKER) {
                 continue;
