@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 pub mod base;
+pub mod debug;
 #[cfg(test)]
 mod tests;
 
@@ -12,6 +13,9 @@ mod tests;
 struct LampApp {
     #[structopt(short)]
     bin_path: PathBuf,
+
+    #[structopt(long)]
+    debug: bool,
 }
 
 fn main() {
