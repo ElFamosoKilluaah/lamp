@@ -1,5 +1,5 @@
 macro_rules! opcodes {
-  { $($variant: ident = $value: expr),+$(,)? } =>
+  { $($variant: ident = $value: expr, op = $operands: expr),+$(,)? } =>
     {
         #[repr(u8)]
         #[derive(Debug, Copy, Clone, PartialEq)]
@@ -7,31 +7,32 @@ macro_rules! opcodes {
             $($variant = $value),+,
         }
         pub const OPCODES: &'static [Opcode] = &[$(Opcode::$variant),*];
-        // pub const OPCODES_MAP: &'static [ (String, Opcode) ] = &[ (format!("{}", $("Opcode::$variant")), $(Opcode::$variant)),* ];
+        pub const OPCODES_OPERANDS: &'static [(Opcode, usize)] = &[$((Opcode::$variant , $operands)),*];
     }
 }
-
+// First number is the mnemonic's ID.
+// op is the number of operands the mnemonic needs
 opcodes! {
     // Arithmetical instructions
-    ADD = 1,
-    SUB = 2,
-    MUL = 3,
-    MOD = 4,
-    INC = 5,
-    DEC = 6,
+    ADD = 1, op = 3,
+    SUB = 2, op = 3,
+    MUL = 3, op = 3,
+    MOD = 4, op = 3,
+    INC = 5, op = 1,
+    DEC = 6, op = 1,
     // Control Flow instructions
-    EQ = 7,
-    NEQ = 8,
-    GT = 9,
-    GTE = 10,
-    LT = 11,
-    LTE = 12,
-    HLT = 13,
-    NOP = 14,
-    LOAD = 15,
-    JMP = 16,
+    EQ =  7, op = 2,
+    NEQ = 8, op = 2,
+    GT =  9, op = 2,
+    GTE = 10, op = 2,
+    LT =  11, op = 2,
+    LTE = 12, op = 2,
+    HLT = 13, op = 0,
+    NOP = 14, op = 0,
+    LOAD = 15, op = 3,
+    JMP = 16, op = 1,
     // Takes the last modulo's remaining and put it into the specified register
-    MODR = 17,
+    MODR = 17, op = 1,
     // Put in the register the specified value
     // MOV = 18,
 }
