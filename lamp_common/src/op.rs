@@ -8,6 +8,7 @@ macro_rules! opcodes {
         }
         pub const OPCODES: &'static [Opcode] = &[$(Opcode::$variant),*];
         pub const OPCODES_OPERANDS: &'static [(Opcode, usize)] = &[$((Opcode::$variant , $operands)),*];
+        pub const OPCODES_STRINGS: &'static [(Opcode, &str)] = &[$((Opcode::$variant , stringify!(Opcode::$variant))),*];
     }
 }
 // First number is the mnemonic's ID.
@@ -47,11 +48,11 @@ pub fn decode_opcode(val: u8) -> Option<Opcode> {
 }
 
 pub fn get_op<'a>(base: String) -> Result<Opcode, &'a str> {
-    for opcode in OPCODES {
-        let dbg = format!("{:?}", opcode);
-        if dbg.contains(&base.to_uppercase()) {
+    for (opcode, name) in OPCODES_STRINGS {
+        if base.to_uppercase().contains(name) {
             return Ok(*opcode);
         }
     }
+
     Err("No opcode found.")
 }
