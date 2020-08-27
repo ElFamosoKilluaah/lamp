@@ -1,7 +1,10 @@
-- Pointers feature
+Order should be respected, because further features depends to nearest ones (in the list of course).
 - Verify the opcode has enough operands to work properly
-- More opcodes
+- Pointers feature
 - Labels to jmp
-- Some memory zones to interact with things like stdout, stdin, etc...
-- STRINGS (very needful)
 - Segments (constants, etc...)
+- STRINGS (very needful), by putting them into constants segment and loading them from pointers.
+- More opcodes
+- Some memory zones to interact with things like stdout, stdin, etc...
+
+BIGGEST GOAL: MAKE LAMP A 64-bit VIRTUAL MACHINE (32 is good too)
