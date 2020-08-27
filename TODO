@@ -1,0 +1,7 @@
+- Pointers feature
+- Verify the opcode has enough operands to work properly
+- More opcodes
+- Labels to jmp
+- Some memory zones to interact with things like stdout, stdin, etc...
+- STRINGS (very needful)
+- Segments (constants, etc...)
