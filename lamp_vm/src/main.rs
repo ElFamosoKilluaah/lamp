@@ -27,6 +27,7 @@ fn main() {
     match bin {
         Ok(v) => {
             if lamp.debug {
+                info!("Debug session started.");
                 let mut debug_session = DebugSession::new(VM::new(v));
                 debug_session.start_debug_session();
                 info!("Debug session ended.");

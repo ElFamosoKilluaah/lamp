@@ -1,6 +1,6 @@
 use super::opcodes::decode_opcode;
 use lamp_common::op::Opcode;
-use log::{error, info, warn};
+use log::{error, info};
 
 pub struct VM {
     // The binary VM has to execute
@@ -37,23 +37,14 @@ impl VM {
 
     // Runs the full binary.
     pub fn run(&mut self) -> VMResult {
-        info!("Running a lamp VM. Total binary size: {}", self.bin.len());
         let mut result;
         loop {
             result = self.cycle();
 
             if self.pc >= self.bin.len() {
-                warn!(
-                    "Program Counter greater than binary's length. Consider it like a finished job.
-                    \nProgram counter: {}\n
-                    Binary's length: {}",
-                    self.pc,
-                    self.bin.len()
-                );
                 break;
             }
         }
-        info!("VM Stopped. Exit code: {:?}", result);
         result
     }
 
