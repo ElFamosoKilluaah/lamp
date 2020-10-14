@@ -1,6 +1,7 @@
 use super::opcodes::decode_opcode;
 use lamp_common::op::Opcode;
 use log::{error, info};
+use super::call_stack::{ CallStack };
 
 pub struct VM {
     // The binary VM has to execute
@@ -13,6 +14,12 @@ pub struct VM {
     modulo_remainder: i32,
     // When an eq test is done, the result is pushed here
     eq_flag: bool,
+
+    // When a ret opcode is found
+    pub ret_flag: bool,
+
+    // The VM's CallStack
+    call_stack: CallStack,
 }
 
 pub type VMResult = Result<i32, VMError>;
@@ -32,6 +39,8 @@ impl VM {
             registers: [0; 32],
             modulo_remainder: 0,
             eq_flag: false,
+            ret_flag: false,
+            call_stack: CallStack::new(),
         }
     }
 
@@ -149,14 +158,18 @@ impl VM {
                 self.set_register_value(register, value);
             }
             Opcode::JMP => {
-                let register = self.next_8_bits();
-                let addr = *self.get_register(register);
-                self.pc = addr as usize;
+                let addr = self.next_8_bits() as usize;
+                self.call_stack.push_one(addr, self.pc + 1);
+                self.call_stack.unwind_one();
             }
 
             Opcode::MODR => {
                 let register = self.next_8_bits();
                 self.set_register_value(register, self.modulo_remainder);
+            }
+
+            Opcode::RET => {
+                self.ret_flag = true;
             }
         }
         Ok(0)
@@ -166,6 +179,26 @@ impl VM {
     pub fn set_register_value(&mut self, index: u8, val: i32) {
         let ptr = self.get_register_mut(index);
         *ptr = val;
+    }
+
+    fn exec_callstack_item(&mut self) -> bool {
+        match self.call_stack.unwind_one() {
+            Some(item) => {
+                &self.set_pc(item.call_pc);
+        
+                while !self.ret_flag {
+                    let _ = &self.cycle();    
+                }
+                
+                &self.set_pc(item.from_pc);
+                
+                true
+            },
+            None => {
+                return false;
+            }
+        }
+        
     }
 
     // Gives a mutable register's reference, and verifies if the given register's index is valid.

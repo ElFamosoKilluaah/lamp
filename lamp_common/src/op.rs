@@ -36,6 +36,7 @@ opcodes! {
     MODR = 17, op = 1,
     // Put in the register the specified value
     // MOV = 18,
+    RET = 18, op = 0,
 }
 
 pub fn decode_opcode(val: u8) -> Option<Opcode> {
